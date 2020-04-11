@@ -7,6 +7,8 @@
     * [Mission](#mission)
     * [Success criteria](#success-criteria)
 - [Project backlog](#project-backlog)
+    * [Backlog](#backlog)
+    * [Icebox](#icebox)
 - [Directory structure](#directory-structure)
 - [Running the app](#running-the-app)
   * [1. Initialize the database](#1-initialize-the-database)
@@ -49,9 +51,9 @@ We will have three primary success criteria:
 
 - **User-friendliness**: To achieve the "business" goals of this project, this tool must be very easy to use and interpret for nontechnical audiences (and since we are unlikely to achieve the business goals, this can perhaps serve as a proxy for likeliness to be adopted). Therefore, this tool must adhere very strongly to the (i.e., pass all criteria of) [Nielsen usability heuristics](https://www.nngroup.com/articles/ten-usability-heuristics/) and be simple and intuitive to use. The user should be able to select different combinations of characteristics for a case and see the probability of each possible case outcome for that combination of characteristics, and they should be able to do so without any explanation or training which is not immediately available within the tool's user interface. 
 
-## Backlog
+## Project backlog
 
-### Backlog tasks
+### Backlog 
 
 Note: I use Fibonacci hour assignments for my task sizes. Task sizes >= 5 should be broken down later. ? indicates that more information is needed to size the task. Story sizes are indicated in parentheses at the end of the story description.
 
@@ -88,7 +90,7 @@ Tasks marked with an asterisk are considered "current" and should be completed w
         + User interface: User selection of inputs (?)
         + User interface: Display of model results (probability and variable importance) based on user selection (?)
 
-### Icebox tasks
+### Icebox 
 - App experience
     * Flask app
         + User interface: Display probabilities based on selections left blank (ex. display part of tree structure with different outcomes for values left blank by user) (?)
