@@ -29,7 +29,7 @@
 
 **QA**: Joe Baka
 
-##Project charter
+## Project charter
 
 ### Vision
 
@@ -48,6 +48,10 @@ We will have three primary success criteria:
 - **Business value**: The "business" value of this project would be provided if it is deemed a useful tool for COPA, journalists, activists, or the public. Therefore, a long-term goal would be seeing this tool cited in a news article or cited in a context like a city council hearing related to the performance of COPA.
 
 - **User-friendliness**: To achieve the "business" goals of this project, this tool must be very easy to use and interpret for nontechnical audiences (and since we are unlikely to achieve the business goals, this can perhaps serve as a proxy for likeliness to be adopted). Therefore, this tool must adhere very strongly to the (i.e., pass all criteria of) [Nielsen usability heuristics](https://www.nngroup.com/articles/ten-usability-heuristics/) and be simple and intuitive to use.
+
+## Backlog
+
+
 
 ## Directory structure 
 
