@@ -27,6 +27,7 @@
 
 # Chicago Civilian Office of Police Accountability Case Outcome Prediction Project
 
+
 **Developer**: Laurie Merrell
 
 **QA**: Joe Baka
