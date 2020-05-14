@@ -5,6 +5,7 @@ __pycache__/
 .DS_Store
 .idea/
 .log
+.env
 .ipynb_checkpoints/
 
 
@@ -13,5 +14,3 @@ data/*
 !data/external/
 config/local
 !.gitkeep
-
-.env
