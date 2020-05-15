@@ -10,7 +10,7 @@
 - [Mid-Project PR Instructions](#mid-project-pr)
   * [Data acquisition and database creation - overall structure](#overall-structure)
   * [Running data acquisition and database creation locally](#running-data-acquisition-and-database-creation-locally)
-  *[Running data acquisition and database creation in Docker](#running-data-acquisition-and-database-creation-in-docker)
+  * [Running data acquisition and database creation in Docker](#running-data-acquisition-and-database-creation-in-docker)
 
 <!-- tocstop -->
 
