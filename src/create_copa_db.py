@@ -66,8 +66,8 @@ if __name__ == "__main__":
     """Create database with configured SQLAlchemy URI.
     """
     try:
-        print(config.SQLALCHEMY_DATABASE_URI)
         create_db(engine_string=config.SQLALCHEMY_DATABASE_URI)
+        logger.warning("Table created in database.")
     except sql.exc.SQLAlchemyError as e1:
         logger.error("Couldn't connect to database. If you're trying to connect to RDS, are you on the NU VPN? :P")
         logger.error(e1)
