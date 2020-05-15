@@ -1,11 +1,10 @@
 import logging.config
 import config
 
-import sqlalchemy
+import pymysql
+import sqlalchemy as sql
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Boolean, Column, Integer, Numeric, String, MetaData
-from sqlalchemy.orm import sessionmaker
-
+from sqlalchemy import Boolean, Column, Integer, Numeric, String
 
 logging.config.fileConfig(config.LOGGING_CONFIG)
 logger = logging.getLogger('create_copa_db')
@@ -44,7 +43,7 @@ class COPA_Case_Attributes(Base):
         return '<Case %i>' % self.id
 
 
-def create_db(engine=None, engine_string=None):
+def create_db(engine_string=None):
     """Creates a database with the data models inherited from `Base` (Tweet and TweetScore).
 
     Args:
@@ -56,11 +55,10 @@ def create_db(engine=None, engine_string=None):
     Returns:
         None
     """
-    if engine is None and engine_string is None:
-        return ValueError("`engine` or `engine_string` must be provided")
-    elif engine is None:
-        engine = create_connection(engine_string=engine_string)
+    if engine_string is None:
+        return ValueError("`engine_string` must be provided")
 
+    engine = sql.create_engine(engine_string)
     Base.metadata.create_all(engine)
 
 
@@ -68,6 +66,10 @@ if __name__ == "__main__":
     """Create database with configured SQLAlchemy URI.
     """
     try:
+        print(config.SQLALCHEMY_DATABASE_URI)
         create_db(engine_string=config.SQLALCHEMY_DATABASE_URI)
-    except ValueError as e:
-        logger.error(e)
+    except sql.exc.SQLAlchemyError as e1:
+        logger.error("Couldn't connect to database. If you're trying to connect to RDS, are you on the NU VPN? :P")
+        logger.error(e1)
+    except ValueError as e2:
+        logger.error(e2)

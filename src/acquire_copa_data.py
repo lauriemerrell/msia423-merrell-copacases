@@ -1,4 +1,5 @@
 import logging.config
+import config
 import requests
 import boto3
 
@@ -85,7 +86,7 @@ if __name__ == "__main__":
     data = pull_copa_data(url)
 
     # if there was an error, we get None from pull_copa_data - check that this has not occurred
-    if data not None:
+    if data is not None:
         # get S3 bucket and key from configs and upload
         s3_bucket = config.S3_BUCKET_NAME
         s3_key = config.S3_KEY_NAME

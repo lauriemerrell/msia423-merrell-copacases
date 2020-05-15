@@ -141,103 +141,78 @@ Tasks marked with an asterisk are considered "current" and should be completed w
 ├── requirements.txt                  <- Python package dependencies 
 ```
 
-## Running the app
-### 1. Initialize the database 
+# MID PROJECT PR 
+## Data acquisition and database creation - overall structure:
+Step by step details are provided below, but at a high level there are two main locations to edit if you want to change setup for the data acquisition and database creation steps:
+* Configuration (S3 Bucket location and S3 key name, local vs. RDS database creation, etc.) for the data acquisition and database creation is stored in /src/config.py.
+* For Docker, environment variables (RDS/MYSQL and S3 credentials) should be created in a .env file in the /src directory. This file will be ignored by Git.
 
-#### Create the database with a single song 
-To create the database in the location configured in `config.py` with one initial song, run: 
+## Running data acquisition and database creation locally
+### 1. Acquire the data
 
-`python run.py create_db --engine_string=<engine_string> --artist=<ARTIST> --title=<TITLE> --album=<ALBUM>`
+### Set your S3 credentials
 
-By default, `python run.py create_db` creates a database at `sqlite:///data/tracks.db` with the initial song *Radar* by Britney spears. 
-#### Adding additional songs 
-To add an additional song:
+Set environment variables:
+* AWS_ACCESS_KEY_ID = < your AWS access key - for instructions on how to find this, see [here](https://aws.amazon.com/blogs/security/how-to-find-update-access-keys-password-mfa-aws-management-console/) >
+* AWS_SECRET_ACCESS_KEY = < your AWS secret access key - for instructions on how to find this, see [here](https://aws.amazon.com/blogs/security/how-to-find-update-access-keys-password-mfa-aws-management-console/) >
 
-`python run.py ingest --engine_string=<engine_string> --artist=<ARTIST> --title=<TITLE> --album=<ALBUM>`
+Or, when running locally, having a ~./aws/credentials file with the above information will also work.
 
-By default, `python run.py ingest` adds *Minor Cause* by Emancipator to the SQLite database located in `sqlite:///data/tracks.db`.
+To acquire the data and upload it in S3, configure the desired data URL, S3 bucket name, and S3 key (the way the data will be labeled in the S3 bucket) in config.py. The default values will download the [COPA data](https://data.cityofchicago.org/Public-Safety/COPA-Cases-Summary/mft5-nfa8) and place it in Laurie's "merrell-copa-cases" bucket with the key "copa_raw_data".
 
-#### Defining your engine string 
-A SQLAlchemy database connection is defined by a string with the following format:
+To run the acquisition/S3 upload code with the configured values, navigate into the /src directory and run:
 
-`dialect+driver://username:password@host:port/database`
+`python acquire_copa_data.py`
 
-The `+dialect` is optional and if not provided, a default is used. For a more detailed description of what `dialect` and `driver` are and how a connection is made, you can see the documentation [here](https://docs.sqlalchemy.org/en/13/core/engines.html). We will cover SQLAlchemy and connection strings in the SQLAlchemy lab session on 
-##### Local SQLite database 
+NOTE: This script (when using the default URL) downloads a full file from the Chicago Data Portal. It does not do an API call, it downloads a full CSV of 80k+ rows. PLEASE DO NOT RUN THIS COMMAND REPEATEDLY WITH THE DEFAULT URL, TO AVOID OVERTAXING THE DATA PORTAL SITE. If you want to test the call, please 
 
-A local SQLite database can be created for development and local testing. It does not require a username or password and replaces the host and port with the path to the database file: 
+### 2. Create an empty copa_case_attributes table in a database
 
-```python
-engine_string='sqlite:///data/tracks.db'
+### Configuration: Local SQLite
 
-```
+When creating the table in a local SQLite database, no credentials are needed. Edit src/config.py with the desired path and database name (DATABASE_PATH - the final portion is the database name.) You do not need to manually construct the engine string. Then, in src/config.py, set the SQLALCHEMY_DATABASE_URI equal to LOCAL_URI.
 
-The three `///` denote that it is a relative path to where the code is being run (which is from the root of this directory).
-
-You can also define the absolute path with four `////`, for example:
-
-```python
-engine_string = 'sqlite://///Users/cmawer/Repos/2020-MSIA423-template-repository/data/tracks.db'
-```
+### Configuration: RDS Instance
+To connect to an RDS Instance (for which you have write access), set the local variables MYSQL_USER, MYSQL_PASSWORD, MYSQL_HOST, MYSQL_PORT, and DATABASE_NAME to correspond with valid values for an existing RDS database. To connect to Laurie's default database (specified by default in config.py), you need to be on the Northwestern GlobalProtect VPN. 
 
 
-### 2. Configure Flask app 
+## Running data acquisition and database creation in Docker
+### 1. Acquire the data
 
-`config/flaskconfig.py` holds the configurations for the Flask app. It includes the following configurations:
+#### 1. Create environment configuration file
 
-```python
-DEBUG = True  # Keep True for debugging, change to False when moving to production 
-LOGGING_CONFIG = "config/logging/local.conf"  # Path to file that configures Python logger
-HOST = "0.0.0.0" # the host that is running the app. 0.0.0.0 when running locally 
-PORT = 5000  # What port to expose app on. Must be the same as the port exposed in app/Dockerfile 
-SQLALCHEMY_DATABASE_URI = 'sqlite:///data/tracks.db'  # URI (engine string) for database that contains tracks
-APP_NAME = "penny-lane"
-SQLALCHEMY_TRACK_MODIFICATIONS = True 
-SQLALCHEMY_ECHO = False  # If true, SQL for queries made will be printed
-MAX_ROWS_SHOW = 100 # Limits the number of rows returned from the database 
-```
+In the /src directory, build a config.env file which will contain your AWS credentials. Specify them like: 
 
-### 3. Run the Flask app 
+AWS_ACCESS_KEY_ID=< your AWS access key - for instructions on how to find this, see [here](https://aws.amazon.com/blogs/security/how-to-find-update-access-keys-password-mfa-aws-management-console/) >
+AWS_SECRET_ACCESS_KEY=< your AWS secret access key - for instructions on how to find this, see [here](https://aws.amazon.com/blogs/security/how-to-find-update-access-keys-password-mfa-aws-management-console/) >
 
-To run the Flask app, run: 
+#### 2. Set your configuration
+
+In /src/config.py, configure the S3 bucket to which you would like to upload the data. It must be a bucket to which the user specified above has write access. Set the S3 key you'd like to use to label the data you upload. You can also change the location from which the data is being downloaded if you want. Save your changes.
+
+#### 3. Build the image 
+
+The Dockerfile for running the data acquisition is in the root folder. To build the image, run from root: 
 
 ```bash
-python app.py
+ docker build -t copa .
 ```
 
-You should now be able to access the app at http://0.0.0.0:5000/ in your browser.
-
-## Running the app in Docker 
-
-### 1. Build the image 
-
-The Dockerfile for running the flask app is in the `app/` folder. To build the image, run from this directory (the root of the repo): 
-
-```bash
- docker build -f app/Dockerfile -t pennylane .
-```
-
-This command builds the Docker image, with the tag `pennylane`, based on the instructions in `app/Dockerfile` and the files existing in this directory.
+This command builds the Docker image, with the tag `copa`, based on the instructions in `src/Dockerfile` and the files existing in this directory.
  
-### 2. Run the container 
+#### 2. Run the container 
 
-To run the app, run from this directory: 
+To run the data acquisition code, run from root: 
 
 ```bash
-docker run -p 5000:5000 --name test pennylane
+docker run --env-file ./src/config.env copa
 ```
-You should now be able to access the app at http://0.0.0.0:5000/ in your browser.
 
-This command runs the `pennylane` image as a container named `test` and forwards the port 5000 from container to your laptop so that you can access the flask app exposed through that port. 
-
-If `PORT` in `config/flaskconfig.py` is changed, this port should be changed accordingly (as should the `EXPOSE 5000` line in `app/Dockerfile`)
 
 ### 3. Kill the container 
 
-Once finished with the app, you will need to kill the container. To do so: 
+Once finished, you will need to kill the container. To do so: 
 
 ```bash
-docker kill test 
+docker kill copa 
 ```
-
-where `test` is the name given in the `docker run` command.

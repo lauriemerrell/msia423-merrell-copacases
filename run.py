@@ -1,12 +1,9 @@
 import argparse
 
-from src.create_copa_db import create_db, add_track
+from src.create_copa_db import create_db
 
 if __name__ == '__main__':
 
-    # Add parsers for both creating a database and adding songs to it
-    parser = argparse.ArgumentParser(description="Create and/or add data to database")
-    subparsers = parser.add_subparsers()
 
     # Sub-parser for creating a database
     sb_create = subparsers.add_parser("create_db", description="Create database")

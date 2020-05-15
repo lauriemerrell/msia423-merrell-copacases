@@ -1,4 +1,5 @@
 from os import path
+import os
 
 # GENERAL SETTINGS --------------------------------------------
 # Getting the parent directory of this file. That will function as the project home.
@@ -29,7 +30,8 @@ MYSQL_USER = os.environ.get("MYSQL_USER")
 MYSQL_PASSWORD = os.environ.get("MYSQL_PASSWORD")
 MYSQL_HOST = os.environ.get("MYSQL_HOST")
 MYSQL_PORT = os.environ.get("MYSQL_PORT")
-RDS_URI = "{}://{}:{}@{}:{}/DATABASE_NAME".format(MYSQL_CONN_TYPE, MYSQL_USER, MYSQL_PASSWORD, MYSQL_HOST, MYSQL_PORT)
+DATABASE_NAME = os.environ.get("DATABASE_NAME")
+RDS_URI = "{}://{}:{}@{}:{}/{}".format(MYSQL_CONN_TYPE, MYSQL_USER, MYSQL_PASSWORD, MYSQL_HOST, MYSQL_PORT, DATABASE_NAME)
 
 # Input desired type (Local vs. RDS) below
-SQLALCHEMY_DATABASE_URI = RDS_URI
+SQLALCHEMY_DATABASE_URI = LOCAL_URI
