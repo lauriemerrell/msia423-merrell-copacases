@@ -129,6 +129,7 @@ Note that this does not include the database creation code.
 In the /src directory, build a config.env file which will contain your AWS credentials. Specify them like: 
 
 AWS_ACCESS_KEY_ID=< your AWS access key - for instructions on how to find this, see [here](https://aws.amazon.com/blogs/security/how-to-find-update-access-keys-password-mfa-aws-management-console/) >
+
 AWS_SECRET_ACCESS_KEY=< your AWS secret access key - for instructions on how to find this, see [here](https://aws.amazon.com/blogs/security/how-to-find-update-access-keys-password-mfa-aws-management-console/) >
 
 #### 2. Set your configuration
