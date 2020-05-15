@@ -108,7 +108,7 @@ To run the acquisition/S3 upload code with the configured values, navigate into 
 
 `python acquire_copa_data.py`
 
-**NOTE: This script (when using the default URL) downloads a full file from the Chicago Data Portal. It does not do an API call, it downloads a full CSV of 80k+ rows. PLEASE DO NOT RUN THIS COMMAND REPEATEDLY WITH THE DEFAULT URL, TO AVOID OVERTAXING THE DATA PORTAL SITE. If you want to test the call, please change the URL in /src/config.py to "https://raw.githubusercontent.com/lauriemerrell/dummy_data/master/dummy_data.txt" - this contains a dummy text file which you can download as much as you want.**
+**NOTE: This script (when using the default URL) downloads a full file from the Chicago Data Portal. It does not do an API call, it downloads a full CSV of 80k+ rows. PLEASE DO NOT RUN THIS COMMAND REPEATEDLY WITH THE DEFAULT URL, TO AVOID OVERTAXING THE DATA PORTAL SITE. If you want to test the call, please change the RAW_DATA_LOCATION URL in /src/config.py to "https://raw.githubusercontent.com/lauriemerrell/dummy_data/master/dummy_data.txt" - this contains a dummy text file which you can download as much as you want.**
 
 ### 2. Create an empty copa_case_attributes table in a database
 
@@ -144,7 +144,7 @@ The Dockerfile for running the data acquisition is in the root folder. To build 
  docker build -t copa .
 ```
 
-This command builds the Docker image, with the tag `copa`, based on the instructions in `src/Dockerfile` and the files existing in this directory.
+This command builds the Docker image, with the tag `copa`, based on the instructions in `Dockerfile` and the files existing in this directory.
  
 #### 2. Run the container 
 
@@ -153,7 +153,7 @@ To run the data acquisition code, run from root:
 ```bash
 docker run --env-file ./src/config.env copa
 ```
-**NOTE: This script (when using the default URL) downloads a full file from the Chicago Data Portal. It does not do an API call, it downloads a full CSV of 80k+ rows. PLEASE DO NOT RUN THIS COMMAND REPEATEDLY WITH THE DEFAULT URL, TO AVOID OVERTAXING THE DATA PORTAL SITE. If you want to test the call, please change the URL in /src/config.py to "https://raw.githubusercontent.com/lauriemerrell/dummy_data/master/dummy_data.txt" and rebuild your Docker image - the new URL contains a dummy text file which you can download as much as you want.**
+**NOTE: This script (when using the default URL) downloads a full file from the Chicago Data Portal. It does not do an API call, it downloads a full CSV of 80k+ rows. PLEASE DO NOT RUN THIS COMMAND REPEATEDLY WITH THE DEFAULT URL, TO AVOID OVERTAXING THE DATA PORTAL SITE. If you want to test the call, please change the RAW_DATA_LOCATION URL in /src/config.py to "https://raw.githubusercontent.com/lauriemerrell/dummy_data/master/dummy_data.txt" and rebuild your Docker image - the new URL contains a dummy text file which you can download as much as you want.**
 
 ### 3. Kill the container 
 
