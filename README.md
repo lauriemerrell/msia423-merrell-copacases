@@ -92,6 +92,9 @@ Step by step details are provided below, but at a high level there are two main 
 * For Docker, environment variables (RDS/MYSQL and S3 credentials) should be created in a .env file in the /src directory. This file will be ignored by Git.
 
 ## Running data acquisition and database creation locally
+
+Note (added 5/15 after PR originally submitted): To run the code locally, you need to install the packages listed in requirements.txt (in the root directory) or create a virtual environment with those packages installed and run the code in that virtual environment.
+
 ### 1. Acquire the data
 
 ### Set your S3 credentials
