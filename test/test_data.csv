@@ -1,0 +1,21 @@
+﻿,LOG_NO,COMPLAINT_DATE,ASSIGNMENT,CASE_TYPE,CURRENT_STATUS,CURRENT_CATEGORY,FINDING_CODE,POLICE_SHOOTING,BEAT,RACE_OF_COMPLAINANTS,SEX_OF_COMPLAINANTS,AGE_OF_COMPLAINANTS,RACE_OF_INVOLVED_OFFICERS,SEX_OF_INVOLVED_OFFICERS,AGE_OF_INVOLVED_OFFICERS,YEARS_ON_FORCE_OF_INVOLVED_OFFICERS,COMPLAINT_HOUR,COMPLAINT_DAY,COMPLAINT_MONTH,EXCESSIVE_FORCE
+1,1086740,9/14/17 13:05,IPRA,Complaint,Closed,Verbal Abuse,No Finding,No,1533,Black or African American,Male,20-29,White,Female,40-49,15-19,13,5,9,FALSE
+2,1086737,9/14/17 11:03,IPRA,Complaint,Closed,Excessive Force,Not Sustained,No,814 | 823,Black or African American,Male,50-59,"Hispanic, Latino, or Spanish Origin",Male,40-49,15-19,11,5,9,TRUE
+8,1086723,9/13/17 12:13,IPRA,Complaint,Closed,Miscellaneous,No Affidavit,No,2234,Black or African American,Female,40-49,Black or African American,Male,40-49,9-May,12,4,9,FALSE
+13,1086684,9/10/17 1:32,IPRA,Complaint,Closed,Excessive Force,No Affidavit,No,512,Black or African American,Female,Unknown,Black or African American,Male,30-39,0-4,1,1,9,TRUE
+16,1086667,9/8/17 10:25,IPRA,Complaint,Closed,Domestic Violence,No Finding,No,1613,White,Male,40-49,White,Female,30-39,14-Oct,10,6,9,FALSE
+19,1086601,9/3/17 4:45,IPRA,Complaint,Closed,Excessive Force,Exonerated,No,1925,Black or African American,Male,20-29,White,Male,50-59,25-29,4,1,9,TRUE
+25,1086525,8/28/17 18:47,IPRA,Complaint,Closed,Verbal Abuse,Unfounded,No,1824,White,Male,Unknown,White,Male,30-39,14-Oct,18,2,8,FALSE
+31,1086456,8/23/17 17:58,IPRA,Complaint,Closed,Unnecessary Display of Weapon,No Affidavit,No,914,"Hispanic, Latino, or Spanish Origin",Male,30-39,White,Male,40-49,20-24,17,4,8,FALSE
+35,1086424,8/22/17 18:22,IPRA,Complaint,Closed,Excessive Force,No Affidavit,No,111,Black or African American,Male,Unknown,"Hispanic, Latino, or Spanish Origin",Male,50-59,25-29,18,3,8,TRUE
+36,1086410,8/22/17 10:37,IPRA,Complaint,Closed,Verbal Abuse,Not Sustained,No,1915,Asian or Pacific Islander,Male,60-69,"Hispanic, Latino, or Spanish Origin",Male,50-59,20-24,10,3,8,FALSE
+40,1086355,8/18/17 5:29,IPRA,Complaint,Closed,Domestic Violence,No Affidavit,No,2013,Unknown,Female,Unknown,White,Male,40-49,14-Oct,5,6,8,FALSE
+42,1086319,8/15/17 16:04,IPRA,Complaint,Closed,Excessive Force,No Affidavit,No,1131,Black or African American,Female,30-39,"Hispanic, Latino, or Spanish Origin",Male,40-49,15-19,16,3,8,TRUE
+46,1086284,8/13/17 4:47,IPRA,Complaint,Closed,Domestic Violence,No Affidavit,No,2211,White,Female,30-39,White,Male,30-39,0-4,4,1,8,FALSE
+48,1086279,8/12/17 12:42,IPRA,Complaint,Closed,Domestic Violence,No Affidavit,No,1623,Unknown,Female,Unknown,Black or African American,Male,30-39,14-Oct,12,7,8,FALSE
+49,1086253,8/10/17 14:31,IPRA,Complaint,Closed,Civil Suits,No Finding,No,711,Black or African American,Male,20-29,"Hispanic, Latino, or Spanish Origin",Male,30-39,9-May,14,5,8,FALSE
+50,1086248,8/10/17 11:02,IPRA,Complaint,Closed,Domestic Violence,Not Sustained,No,133,"Hispanic, Latino, or Spanish Origin",Female,40-49,White,Male,30-39,14-Oct,11,5,8,FALSE
+51,1086241,8/9/17 14:57,IPRA,Complaint,Closed,Excessive Force,No Finding,No,411,Black or African American,Female,20-29,Black or African American,Female,30-39,0-4,14,4,8,TRUE
+55,1086184,8/4/17 13:00,IPRA,Complaint,Closed,Unnecessary Display of Weapon,Not Sustained,No,614,Black or African American,Male,50-59,Black or African American,Male,40-49,14-Oct,13,6,8,FALSE
+59,1086082,7/27/17 12:41,IPRA,Complaint,Closed,Verbal Abuse,No Affidavit,No,834,Asian or Pacific Islander,Female,50-59,Asian or Pacific Islander,Male,40-49,20-24,12,5,7,FALSE
+70,1086016,7/23/20 13:39,BIA,Complaint,Closed,Domestic Violence,No Affidavit | yadayadya,No,2212,,,40-49,Black or African American,Male,50-59,15-19,13,1,7,FALSE

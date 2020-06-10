@@ -7,15 +7,16 @@
     * [Mission](#mission)
     * [Success criteria](#success-criteria)
 - [Directory structure](#directory-structure)
-- [Mid-Project PR Instructions](#mid-project-pr)
-  * [Data acquisition and database creation - overall structure](#overall-structure)
-  * [Running data acquisition and database creation locally](#running-data-acquisition-and-database-creation-locally)
-  * [Running data acquisition and database creation in Docker](#running-data-acquisition-and-database-creation-in-docker)
+- [Instructions](#instructions)
+  * [How to run the model pipeline](#how-to-run-the-model-pipeline )
+  * [How to run the model pipeline with database creation](#how-to-run-the-model-pipeline-with-database-creation)
+  * [How to run the actual app](#how-to-run-the-actual-app)
+  * [Logging](#logging)
+ - [Repo structure](#repo-structure)
 
 <!-- tocstop -->
 
 # Chicago Civilian Office of Police Accountability Case Outcome Prediction Project
-
 
 **Developer**: Laurie Merrell
 
@@ -41,124 +42,69 @@ We will have three primary success criteria:
 
 - **User-friendliness**: To achieve the "business" goals of this project, this tool must be very easy to use and interpret for nontechnical audiences (and since we are unlikely to achieve the business goals, this can perhaps serve as a proxy for likeliness to be adopted). Therefore, this tool must adhere very strongly to the (i.e., pass all criteria of) [Nielsen usability heuristics](https://www.nngroup.com/articles/ten-usability-heuristics/) and be simple and intuitive to use. The user should be able to select different combinations of characteristics for a case and see the probability of each possible case outcome for that combination of characteristics, and they should be able to do so without any explanation or training which is not immediately available within the tool's user interface. 
 
-## Directory structure 
+## Instructions
 
-```
-├── README.md                         <- You are here
-├── api
-│   ├── static/                       <- CSS, JS files that remain static
-│   ├── templates/                    <- HTML (or other code) that is templated and changes based on a set of inputs
-│   ├── boot.sh                       <- Start up script for launching app in Docker container.
-│   ├── Dockerfile                    <- Dockerfile for building image to run app  
-│
-├── config                            <- Directory for configuration files 
-│   ├── local/                        <- Directory for keeping environment variables and other local configurations that *do not sync** to Github 
-│   ├── logging/                      <- Configuration of python loggers
-│   ├── flaskconfig.py                <- Configurations for Flask API 
-│
-├── data                              <- Folder that contains data used or generated. Only the external/ and sample/ subdirectories are tracked by git. 
-│   ├── external/                     <- External data sources, usually reference data,  will be synced with git
-│   ├── sample/                       <- Sample data used for code development and testing, will be synced with git
-│
-├── deliverables/                     <- Any white papers, presentations, final work products that are presented or delivered to a stakeholder 
-│
-├── docs/                             <- Sphinx documentation based on Python docstrings. Optional for this project. 
-│
-├── figures/                          <- Generated graphics and figures to be used in reporting, documentation, etc
-│
-├── models/                           <- Trained model objects (TMOs), model predictions, and/or model summaries
-│
-├── notebooks/
-│   ├── archive/                      <- Develop notebooks no longer being used.
-│   ├── deliver/                      <- Notebooks shared with others / in final state
-│   ├── develop/                      <- Current notebooks being used in development.
-│   ├── template.ipynb                <- Template notebook for analysis with useful imports, helper functions, and SQLAlchemy setup. 
-│
-├── reference/                        <- Any reference material relevant to the project
-│
-├── src/                              <- Source data for the project 
-│
-├── test/                             <- Files necessary for running model tests (see documentation below) 
-│
-├── app.py                            <- Flask wrapper for running the model 
-├── run.py                            <- Simplifies the execution of one or more of the src scripts  
-├── requirements.txt                  <- Python package dependencies 
-```
+All commands listed in this section should be run from the root directory. 
 
-# MID PROJECT PR 
-## Overall structure:
-Step by step details are provided below, but at a high level there are two main locations to edit if you want to change setup for the data acquisition and database creation steps:
-* Configuration (S3 Bucket location and S3 key name, local vs. RDS database creation, etc.) for the data acquisition and database creation is stored in /src/config.py.
-* For Docker, environment variables (RDS/MYSQL and S3 credentials) should be created in a .env file in the /src directory. This file will be ignored by Git.
+### How to run the model pipeline 
 
-## Running data acquisition and database creation locally
-### 1. Acquire the data
+Ensure that you have your S3 credentials set as environment variables (`AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`). Default settings are all specified in config/config.yaml. If you want to run with the default settings (which do NOT include creating or putting data in a MySQL database of any kind), you can run the following two commands from the root directory:
 
-### Set your S3 credentials
+`docker build -f Dockerfile_model -t model .`
 
-Set environment variables:
-* AWS_ACCESS_KEY_ID = < your AWS access key - for instructions on how to find this, see [here](https://aws.amazon.com/blogs/security/how-to-find-update-access-keys-password-mfa-aws-management-console/) >
-* AWS_SECRET_ACCESS_KEY = < your AWS secret access key - for instructions on how to find this, see [here](https://aws.amazon.com/blogs/security/how-to-find-update-access-keys-password-mfa-aws-management-console/) >
+followed by
 
-Or, when running locally, having a ~./aws/credentials file with the above information will also work.
+`docker run --mount type=bind,source="$(pwd)",target=/app/ -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY model  run.py config/config.yaml`
 
-To acquire the data and upload it in S3, configure the desired data URL, S3 bucket name, and S3 key (the way the data will be labeled in the S3 bucket) in config.py. The default values will download the [COPA data](https://data.cityofchicago.org/Public-Safety/COPA-Cases-Summary/mft5-nfa8) and place it in Laurie's "merrell-copa-cases" bucket with the key "copa_raw_data".
+This command (if the default YAML settings are not changed) will: clean and featurize the raw data from S3, put the cleaned data in S3, and then train a model on the clean data from S3. Model output objects will be saved in the models directory if run with default settings. The expected model output objects are:
+- model.p pickle file with trained model object
+- ov_acc.txt which prints the overall test accuracy (expected value with default settings is: 0.45756880733944955)
+- accuracy.csv which prints the test accuracy by true category
+- prevalence.csv which prints the true category prevalence in the test data
+- var_imp.csv which prints the variable importance in the trained model
 
-To run the acquisition/S3 upload code with the configured values, navigate into the /src directory and run:
+You can run with a different YAML file by changing "config/config.yaml" to the desired filepath in the docker run command. You can change the "ACQUIRE_FLAG" in the default YAML to begin the pipeline by downloading from the original data source instead of with the raw data already in S3. 
 
-`python acquire_copa_data.py`
+### How to run the model pipeline with database creation
 
-**NOTE: This script (when using the default URL) downloads a full file from the Chicago Data Portal. It does not do an API call, it downloads a full CSV of 80k+ rows. PLEASE DO NOT RUN THIS COMMAND REPEATEDLY WITH THE DEFAULT URL, TO AVOID OVERTAXING THE DATA PORTAL SITE. If you want to test the call, please change the RAW_DATA_LOCATION URL in /src/config.py to "https://raw.githubusercontent.com/lauriemerrell/dummy_data/master/dummy_data.txt" - this contains a dummy text file which you can download as much as you want.**
+If you want to generate the data to be placed in the database (all combinations of input variables - it is slow to generate), build the database, and put the data in it, you can modify the config/config.yaml file as follows: change APP_DATA_FLAG to True and DB_FLAG to True. Ensure that your SQLALCHEMY_DATABASE_URI environment variable is set as follows (for RDS): "mysql+pymysql://user:password@host:port" (without quotes - example from Lab 4 documentation.) You must be connected to Northwestern GlobalProtect VPN for this to work if using RDS (as opposed to a local SQLite database.).
 
-### 2. Create an empty copa_case_attributes table in a database
+Then run the same Docker build command as above, followed by this new run command - this version can take over 40 minutes to complete:
+`docker run --mount type=bind,source="$(pwd)",target=/app/ -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY -e SQLALCHEMY_DATABASE_URI model run.py config/config.yaml`
 
-### Configuration: Local SQLite
+This will run all the model fitting steps but will also generate all the data to put in the database (which takes several minutes) and then put it in the database (which takes about 40 minutes).
 
-When creating the table in a local SQLite database, no credentials are needed. Edit src/config.py with the desired path and database name (DATABASE_PATH - the final portion is the database name.) You do not need to manually construct the engine string. Then, in src/config.py, set the SQLALCHEMY_DATABASE_URI equal to LOCAL_URI.
+### How to run the model pipeline unit tests
 
-### Configuration: RDS Instance
-To connect to an RDS Instance (for which you have write access), set the local variables MYSQL_USER, MYSQL_PASSWORD, MYSQL_HOST, MYSQL_PORT, and DATABASE_NAME to correspond with valid values for an existing RDS database. To connect to Laurie's default database (specified by default in config.py), you need to be on the Northwestern GlobalProtect VPN. 
+Run `docker build -f Dockerfile_test -t test .` followed by `docker run test -m pytest`
 
+Unit test results will be printed to console. There are 16 unit tests; most functions write to file so are not unit tested.
 
-## Running data acquisition in Docker
-Note that this does not include the database creation code.
-### 1. Acquire the data
+### How to run the actual app
 
-#### 1. Create environment configuration file
+To run the web app, ensure that your SQLALCHEMY_DATABASE_URI environment variable is set as follows (for RDS): "mysql+pymysql://user:password@host:port" (without quotes - example from Lab 4 documentation.) You must be connected to Northwestern GlobalProtect VPN for this to work if using RDS (as opposed to a local SQLite database.)
 
-In the /src directory, build a config.env file which will contain your AWS credentials. Specify them like: 
+Run `docker build -f Dockerfile_app -t app .` to build the Docker image and then run `docker run --publish 5000:5000 -e SQLALCHEMY_DATABASE_URI app app.py` to run. You can access the app in a browser at http://0.0.0.0:5000/ locally. Users should not set any configuration for the app, but the settings can be reviewed in the config/flaskconfig.py file. You will need to use CTRL+C to quit the app once it's running.
 
-AWS_ACCESS_KEY_ID=< your AWS access key - for instructions on how to find this, see [here](https://aws.amazon.com/blogs/security/how-to-find-update-access-keys-password-mfa-aws-management-console/) >
+### Logging
 
-AWS_SECRET_ACCESS_KEY=< your AWS secret access key - for instructions on how to find this, see [here](https://aws.amazon.com/blogs/security/how-to-find-update-access-keys-password-mfa-aws-management-console/) >
+Logging settings can be specified in config/logging/local.conf. If you run with default settings you should only get INFO logging alerts from the code in this repo, except that the Flask app logger (werkzeug) will log a warning when you run the app saying that the debugger is active.
 
-#### 2. Set your configuration
+## Repo structure
+The app/templates directory contains the HTML files for the Flask app. The config directory contains configuration files. The deliverables directory contains the final presentation slides. The models directory is empty but is where the model artifacts are saved by default when the pipeline is run. The notebooks directory contains a Jupyter notebook used for the project. The project management directory contains the project backlog and pull request documentation.  The src directory contains all the scripts for the model pipeline. The test directory contains test scripts and a test dataset which they validate against. 
 
-In /src/config.py, configure the S3 bucket to which you would like to upload the data. It must be a bucket to which the user specified above has write access. Set the S3 key you'd like to use to label the data you upload. You can also change the location from which the data is being downloaded if you want. Save your changes.
+All files needed to run the pipeline or the app directly are saved in the root directory.
 
-#### 3. Build the image 
-
-The Dockerfile for running the data acquisition is in the root folder. To build the image, run from root: 
-
-```bash
- docker build -t copa .
-```
-
-This command builds the Docker image, with the tag `copa`, based on the instructions in `Dockerfile` and the files existing in this directory.
- 
-#### 2. Run the container 
-
-To run the data acquisition code, run from root: 
-
-```bash
-docker run --env-file ./src/config.env copa
-```
-**NOTE: This script (when using the default URL) downloads a full file from the Chicago Data Portal. It does not do an API call, it downloads a full CSV of 80k+ rows. PLEASE DO NOT RUN THIS COMMAND REPEATEDLY WITH THE DEFAULT URL, TO AVOID OVERTAXING THE DATA PORTAL SITE. If you want to test the call, please change the RAW_DATA_LOCATION URL in /src/config.py to "https://raw.githubusercontent.com/lauriemerrell/dummy_data/master/dummy_data.txt" and rebuild your Docker image - the new URL contains a dummy text file which you can download as much as you want.**
-
-### 3. Kill the container 
-
-Once finished, you will need to kill the container. To do so: 
-
-```bash
-docker kill copa 
-```
+## References
+Direct lines of code are cited as comments inline. These inline references are aggregated here (Does not include documentation for packages themselves -- they are implied resources. Requirements.txt has full list of packages needed.) The app UI was built using Bootstrap.
+Model pipeline:
+- https://stackoverflow.com/questions/27975069/how-to-filter-rows-containing-a-string-pattern-from-a-pandas-dataframe
+- https://stackoverflow.com/questions/53699012/performant-cartesian-product-cross-join-with-pandas
+- https://stackoverflow.com/questions/23377108/pandas-percentage-of-total-with-groupby
+- https://stackoverflow.com/questions/39043326/computing-feature-importance-with-onehotencoded-features
+- https://stackoverflow.com/questions/47778372/python-requests-fail-silently
+App:
+- https://stackoverflow.com/questions/14105452/what-is-the-cause-of-the-bad-request-error-when-submitting-form-in-flask-applica
+- https://stackoverflow.com/questions/37336520/sqlalchemy-dynamic-filter
+- https://stackoverflow.com/questions/7604967/sqlalchemy-build-query-filter-dynamically-from-dict
+- https://stackoverflow.com/questions/10251724/how-to-give-column-name-dynamically-from-string-variable-in-sql-alchemy-filter
