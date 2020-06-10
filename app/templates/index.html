@@ -1,43 +1,203 @@
-<!DOCTYPE html>
+<! -- doc template taken from Bootstrap: https://getbootstrap.com/docs/4.5/getting-started/introduction/ -->
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <link href="static/basic.css" rel="stylesheet">
-</head>
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-<body>
-    <h3>
-         <a href = "{{ url_for('index') }}">Penny Lane Music Recommender</a>
-    </h3>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
 
-    <hr/>
-    <table>
+    <title>Chicago Civilian Office of Police Accountability (COPA) Case Outcome Predictions</title>
+  </head>
+  <body>
+  <div class="container">
+      <h1><center>Chicago Civilian Office of Police Accountability (COPA) <br> Case Outcome Predictions</center></h1>
+
+            <p>Chicago's <a href="https://www.chicagocopa.org/">Civilian Office of Police Accountability (COPA) </a> oversees some cases of police misconduct in the city of Chicago and makes judgments about whether to uphold residents' complaints. This webpage allows you to predict the outcome of a COPA complaint case based on the demographics of the complainant and the involved officer, and whether or not the case involves excessive force or a police shooting.</p>
+
+        <p>The possible findings of an investigation <a href= "https://www.chicagocopa.org/investigations/investigative-process/">include </a> (paraphrased): Sustained (the complaint against the officer is upheld), Not Sustained (allegation cannot be proved or disproven), Exonerated (police conduct is ruled as justified), Unfounded (the incident in question does not appear to have occurred as reported by complainant). Other outcomes not clearly defined in COPA documentation are No Finding (implies COPA did not issue a ruling) and No Affidavit (appears to mean that the complainant did not sign an affidavit so there was no ruling).</p>
+
+      <p><b>Select case characteristics to see predicted case outcome:</b></p>
+
+    <form action="{{ url_for('search_for_outcome') }}" method=post>
+        <div class="row">
+            <div class="col-md-2">
+              <div class="form-group">
+                <label for="police_shooting" class="col-form-label-sm">Police shooting?</label>
+                <select class="form-control form-control-sm" name="police_shooting" id="police_shooting">
+                    <option></option>
+                    <option>Yes</option>
+                    <option>No</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="form-group">
+                <label for="excessive_force" class="col-form-label-sm">Excessive force?</label>
+                <select class="form-control form-control-sm" name="excessive_force" id="excessive_force">
+                    <option></option>
+                    <option>True</option>
+                    <option>False</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="form-group">
+                <label for="race_complainants" class="col-form-label-sm">Race of complainant</label>
+                <select class="form-control form-control-sm" name="race_complainants" id="race_complainants">
+                    <option></option>
+                    <option>American Indian or Alaska Native</option>
+                    <option>Asian or Pacific Islander</option>
+                    <option>Black or African American</option>
+                    <option>Hispanic, Latino, or Spanish Origin</option>
+                    <option>Native Hawaiian or Other Pacific Islander</option>
+                    <option>Middle Eastern or North African</option>
+                    <option>White</option>
+                    <option>Prefer Not to Say</option>
+                    <option>Unknown</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="form-group">
+                <label for="sex_complainants" class="col-form-label-sm">Gender of complainant</label>
+                <select class="form-control form-control-sm" name="sex_complainants" id="sex_complainants">
+                    <option></option>
+                    <option>Female</option>
+                    <option>Male</option>
+                    <option>Prefer to Self-Describe</option>
+                    <option>Unknown</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="form-group">
+                <label for="age_complainants" class="col-form-label-sm">Age of complainant</label>
+                <select class="form-control form-control-sm" name="age_complainants" id="age_complainants">
+                    <option></option>
+                    <option>0-19</option>
+                    <option>20-29</option>
+                    <option>30-39</option>
+                    <option>40-49</option>
+                    <option>50-59</option>
+                    <option>60-69</option>
+                    <option>70+</option>
+                    <option>70-79</option>
+                    <option>90+</option>
+                    <option>Unknown</option>
+                </select>
+              </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-2">
+              <div class="form-group">
+                <label for="race_officers" class="col-form-label-sm">Race of officer</label>
+                <select class="form-control form-control-sm" name="race_officers" id="race_officers">
+                    <option></option>
+                    <option>American Indian or Alaska Native</option>
+                    <option>Asian or Pacific Islander</option>
+                    <option>Black or African American</option>
+                    <option>Hispanic, Latino, or Spanish Origin</option>
+                    <option>Middle Eastern or North African</option>
+                    <option>White</option>
+                    <option>Unknown</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="form-group">
+                <label for="sex_involved_officers" class="col-form-label-sm">Gender of officer</label>
+                <select class="form-control form-control-sm" name="sex_involved_officers" id="sex_involved_officers">
+                    <option></option>
+                    <option>Male</option>
+                    <option>Female</option>
+                    <option>Non-Binary / Third Gender</option>
+                    <option>Prefer not to say</option>
+                    <option>Unknown</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="form-group">
+                <label for="age_officers" class="col-form-label-sm">Age of officer</label>
+                <select class="form-control form-control-sm" name="age_officers" id="age_officers">
+                    <option></option>
+                    <option>20-29</option>
+                    <option>30-39</option>
+                    <option>40-49</option>
+                    <option>50-59</option>
+                    <option>60-69</option>
+                    <option>70+</option>
+                    <option>Unknown</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="form-group">
+                <label for="years_on_force_officers" class="col-form-label-sm">Years on force of officer</label>
+                <select class="form-control form-control-sm" name="years_on_force_officers" id="years_on_force_officers">
+                    <option></option>
+                    <option>0-4</option>
+                    <option>5-9</option>
+                    <option>10-14</option>
+                    <option>15-19</option>
+                    <option>20-24</option>
+                    <option>25-29</option>
+                    <option>30+</option>
+                    <option>Unknown</option>
+                </select>
+              </div>
+            </div>
+         </div>
+      <button type="submit" class="btn btn-primary">Predict outcomes</button>
+    </form>
+    <br><p><i>
+      {% for message in messages %}
+      {{ message }}
+      {% endfor %}</i></p>
+    <table class="table table-bordered">
          <thead>
             <tr>
-               <th>Title</th>
-               <th>Artist</th>
-               <th>Album</th>
+               <th>Police shooting?</th>
+               <th>Excessive force?</th>
+               <th>Race of complainant</th>
+               <th>Gender of complainant</th>
+               <th>Age of complainant</th>
+               <th>Race of officer</th>
+               <th>Gender of officer</th>
+               <th>Age of officer</th>
+               <th>Years on force of officer</th>
+              <th> Predicted outcome</th>
             </tr>
          </thead>
 
          <tbody>
-            {% for track in tracks %}
+            {% for case in cases %}
                <tr>
-                   <td>{{ track.title }}</td>
-                   <td>{{ track.artist }}</td>
-                   <td>{{ track.album }}</td>
+                   <td>{{ case.police_shooting }}</td>
+                   <td>{{ case.excessive_force }}</td>
+                   <td>{{ case.race_complainants }}</td>
+                   <td>{{ case.sex_complainants }}</td>
+                   <td>{{ case.age_complainants }}</td>
+                   <td>{{ case.race_officers }}</td>
+                   <td>{{ case.sex_involved_officers}}</td>
+                   <td>{{ case.age_officers }}</td>
+                   <td>{{ case.years_on_force_officers }}</td>
+                   <td>{{ case.pred_outcome }}</td>
                </tr>
             {% endfor %}
          </tbody>
       </table>
-      <form action="{{ url_for('add_entry') }}" method=post class=add-entry>
-      <dl>
-        <input type=text size=15 name=title placeholder="Title">
-        <input type=text size=15 name=artist placeholder="Artist">
-        <input type=text size=15 name=album placeholder="Album">
-        <input type=submit value=Add>
-      </dl>
-    </form>
-
-</body>
+      <p><i><small>A maximum of 20 rows are displayed at any time</small></i></p>
+            <p>The predicted outcomes are generated based on a model built on data from the <a href="https://data.cityofchicago.org/Public-Safety/COPA-Cases-Summary/mft5-nfa8">COPA Cases Summary dataset </a> on the <a href ="https://data.cityofchicago.org/">Chicago Data Portal.</a> The dataset used for modeling contains closed complaint cases investigated by COPA or its predecessor IPRA involving only one complainant and one officer prior to May 10, 2020.</p>
+    </div>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+  </body>
 </html>

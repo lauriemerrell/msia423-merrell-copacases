@@ -1,0 +1,65 @@
+# LOGGING SETTINGS --------------------------------------------
+# specify logging configuration file location
+LOGGING_CONFIG: config/logging/local.conf
+
+# DATA ACQUISITION -------------------------------------------
+# Check whether to acquire data
+ACQUIRE_FLAG: False
+
+# RAW DATA SETTINGS ------------------------------------------
+# URL from which to download data
+RAW_DATA_LOCATION: https://data.cityofchicago.org/api/views/mft5-nfa8/rows.csv?accessType=DOWNLOAD
+
+# S3 SETTINGS ------------------------------------------------
+# S3 bucket into which raw data will be placed (user must have WRITE privileges)
+S3_BUCKET_NAME: merrell-copa-cases
+# S3 key name to use when uploading data
+S3_KEY_NAME: copa_raw_data
+
+# DATA CLEANING ----------------------------------------------
+# Check whether to clean data
+CLEAN_FLAG: True
+# Location from which to load data to clean
+DATA_TO_CLEAN: s3://merrell-copa-cases/copa_raw_data
+CLEAN_SAVE_LOCATION: s3://merrell-copa-cases/clean_data.csv
+
+# MODEL FITTING ----------------------------------------------
+# Check whether to fit model and take associated steps
+MODEL_FLAG: True
+# Check whether to generate all the unique combinations data which can then be saved to the database - this step is slow
+APP_DATA_FLAG: False
+#Features to use in modeling
+FEATURES:
+  - RACE_OF_COMPLAINANTS
+  - AGE_OF_COMPLAINANTS
+  - SEX_OF_COMPLAINANTS
+  - RACE_OF_INVOLVED_OFFICERS
+  - AGE_OF_INVOLVED_OFFICERS
+  - SEX_OF_INVOLVED_OFFICERS
+  - YEARS_ON_FORCE_OF_INVOLVED_OFFICERS
+  - POLICE_SHOOTING
+  - EXCESSIVE_FORCE
+# Response variable
+TARGET: FINDING_CODE
+# Proportion of dataset to use as test set
+TEST_SIZE: .3
+# Random state for train/test split
+SPLIT_RANDOM_STATE: 223
+# Random state for model fitting
+FIT_RANDOM_STATE: 23
+# Filepath for the trained model object
+MODEL_SAVE_LOCATION: models/model.p
+# Filepath for full data (~ 2 million rows - do not save locally)
+APP_SAVE_LOCATION: s3://merrell-copa-cases/app_data.csv
+# Filepath for overall accuracy (.txt)
+OV_ACC_SAVE_LOCATION: models/ov_acc.txt
+# Filepath for accuracy by true class (.csv)
+ACC_SAVE_LOCATION: models/accuracy.csv
+# Filepath for prevalence by class (.csv)
+PREV_SAVE_LOCATION: models/prevalence.csv
+# Filepath for variable importance (.csv)
+VAR_SAVE_LOCATION: models/var_imp.csv
+
+# DATABASE? ----------------------------------------------
+# Check whether to generate database
+DB_FLAG: False

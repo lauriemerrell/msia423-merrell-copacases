@@ -1,9 +1,8 @@
 import traceback
 from flask import render_template, request, redirect, url_for
 import logging.config
-from app.models import Tracks
 from flask import Flask
-#from src.add_songs import Tracks
+from src.create_copa_db import COPA_Case_Attributes
 from flask_sqlalchemy import SQLAlchemy
 
 
@@ -17,17 +16,15 @@ app.config.from_pyfile('config/flaskconfig.py')
 # up the logger (e.g. config/logging/local.conf)
 logging.config.fileConfig(app.config["LOGGING_CONFIG"])
 logger = logging.getLogger(app.config["APP_NAME"])
-logger.debug('Test log')
 
 # Initialize the database
 db = SQLAlchemy(app)
 
-
 @app.route('/')
 def index():
-    """Main view that lists songs in the database.
+    """Main view with one example row.
 
-    Create view into index page that uses data queried from Track database and
+    Create view into index page that uses data queried from COPA_Case_Attributes database and
     inserts it into the msiapp/templates/index.html template.
 
     Returns: rendered html template
@@ -35,30 +32,55 @@ def index():
     """
 
     try:
-        tracks = db.session.query(Tracks).limit(app.config["MAX_ROWS_SHOW"]).all()
+        cases = db.session.query(COPA_Case_Attributes).limit(5).all()
         logger.debug("Index page accessed")
-        return render_template('index.html', tracks=tracks)
+        messages = ["Showing: Example predictions"]
+        return render_template('index.html', cases=cases, messages=messages)
     except:
         traceback.print_exc()
-        logger.warning("Not able to display tracks, error page returned")
+        logger.warning("Not able to display index, error page returned")
         return render_template('error.html')
 
 
-@app.route('/add', methods=['POST'])
-def add_entry():
+@app.route('/search', methods=['GET','POST'])
+def search_for_outcome():
     """View that process a POST with new song input
 
     :return: redirect to index page
     """
-
     try:
-        track1 = Tracks(artist=request.form['artist'], album=request.form['album'], title=request.form['title'])
-        db.session.add(track1)
-        db.session.commit()
-        logger.info("New song added: %s by %s", request.form['title'], request.form['artist'])
-        return redirect(url_for('index'))
-    except:
-        logger.warning("Not able to display tracks, error page returned")
+        # matching input to variable: https://stackoverflow.com/questions/14105452/what-is-the-cause-of-the-bad-request-error-when-submitting-form-in-flask-applica
+        req = request.form
+        print(req)
+        query = db.session.query(COPA_Case_Attributes)
+        logger.info("Query initialized")
+        field_list = ["police_shooting", "race_complainants", "sex_complainants", "age_complainants",
+                    "race_officers","sex_involved_officers", "age_officers", "excessive_force",
+                    "years_on_force_officers"]
+        field_label = {"police_shooting":"Police shooting: ", "race_complainants":"Race of complainant: ", "sex_complainants": "Gender of complainant: ",
+                       "age_complainants": "Age of complainant: ",
+                      "race_officers": "Race of officer: ", "sex_involved_officers": "Gender of officer: ",
+                       "age_officers": "Age of officer: ", "excessive_force": "Excessive force: ",
+                      "years_on_force_officers": "Years on force of officer: "}
+        messages = ["Showing: Predictions displayed based on selection - "]
+        detail = ""
+        # build query dynamically: https://stackoverflow.com/questions/37336520/sqlalchemy-dynamic-filter
+        # build query dynamically: https://stackoverflow.com/questions/7604967/sqlalchemy-build-query-filter-dynamically-from-dict
+        # get query attr rather than string: https://stackoverflow.com/questions/10251724/how-to-give-column-name-dynamically-from-string-variable-in-sql-alchemy-filter
+        for f in field_list:
+            if request.form[f]:
+                query = query.filter(getattr(COPA_Case_Attributes, f) == request.form[f])
+                detail = detail+field_label[f]+request.form[f]+". "
+        if detail == "":
+            detail = "None"
+        logger.info("Perform query")
+        cases = query.limit(app.config["MAX_ROWS"]).all()
+        logger.info("Query results: {}".format(cases))
+        messages.append(detail)
+        return render_template('index.html', cases=cases, messages = messages)
+    except Exception as e:
+        logger.error(e)
+        logger.warning("Not able to display search, error page returned")
         return render_template('error.html')
 
 

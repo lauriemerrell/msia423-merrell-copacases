@@ -1,10 +1,25 @@
-import logging.config
-import config
 import requests
 import boto3
+import logging
 
-logging.config.fileConfig(config.LOGGING_CONFIG)
 logger = logging.getLogger('acquire-copa')
+
+def acquire_copa_data(url, s3_bucket, s3_key):
+    """Read COPA data score records from URL and upload to S3 Bucket.
+    Args:
+        url (`str`): URL from which to request data.
+        s3_bucket (`str`): Name of S3 bucket in which to store data.
+        s3_key (`str`): Name of S3 key to label the data.
+    Returns:
+        None.
+    """
+    # request data
+    data = pull_copa_data(url)
+
+    # if there was an error, we get None from pull_copa_data - check that this has not occurred
+    if data is not None:
+        # get S3 bucket and key from configs and upload
+        put_in_S3(data, s3_bucket, s3_key)
 
 def pull_copa_data(url):
     """ Pull data from URL.
@@ -28,7 +43,7 @@ def pull_copa_data(url):
             # check that we actually received data - syntax from: https://stackoverflow.com/questions/47778372/python-requests-fail-silently
             if data:
                 data_len = len(data.split("\n"))
-                logger.warning("Retrieved %i lines of data.", data_len)
+                logger.info("Retrieved {} lines of data".format(data_len))
                 return data
             # if no data, log error and return none
             else:
@@ -54,8 +69,7 @@ def put_in_S3(data, s3_bucket, s3_key):
         key (str): S3 Key to apply to the data when it's uploaded.
 
     Returns:
-        None
-
+        None.
     """
     # start s3 resource
     s3 = boto3.resource("s3")
@@ -67,27 +81,11 @@ def put_in_S3(data, s3_bucket, s3_key):
         bucket.put_object(
             Body=data,
             Key=s3_key)
-        logger.warning("Data successfully placed in S3.")
+        logger.info("Data successfully placed in {} bucket in S3 with key".format(s3_bucket,s3_key))
 
     # catch BotoCore exceptions - this includes AWS exceptions (as ClientErrors)
-    except BotoCoreException as e:
+    except Exception as e:
         logger.error("Error: Could not save data in S3.")
-        logger.error(str(e))
+        logger.error(e)
 
 
-if __name__ == "__main__":
-    """Read COPA data score records from URL and upload to S3 Bucket.
-    """
-
-    # get configurable URL to request data
-    url = config.RAW_DATA_LOCATION
-
-    # request data
-    data = pull_copa_data(url)
-
-    # if there was an error, we get None from pull_copa_data - check that this has not occurred
-    if data is not None:
-        # get S3 bucket and key from configs and upload
-        s3_bucket = config.S3_BUCKET_NAME
-        s3_key = config.S3_KEY_NAME
-        put_in_S3(data, s3_bucket, s3_key)
