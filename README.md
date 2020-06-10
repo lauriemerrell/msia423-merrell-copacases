@@ -77,7 +77,7 @@ This will run all the model fitting steps but will also generate all the data to
 
 ### How to run the model pipeline unit tests
 
-Run `docker run app -m pytest`
+Run `docker run app -m pytest` (using the Dockerfile built earlier with the name "app").
 
 Unit test results will be printed to console. There are 16 unit tests; most functions write to file so are not unit tested.
 
