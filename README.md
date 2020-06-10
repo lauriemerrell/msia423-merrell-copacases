@@ -13,6 +13,7 @@
   * [How to run the actual app](#how-to-run-the-actual-app)
   * [Logging](#logging)
  - [Repo structure](#repo-structure)
+ - [References](#references)
 
 <!-- tocstop -->
 
@@ -96,7 +97,7 @@ The app/templates directory contains the HTML files for the Flask app. The confi
 All files needed to run the pipeline or the app directly are saved in the root directory.
 
 ## References
-Direct lines of code are cited as comments inline. These inline references are aggregated here (Does not include documentation for packages themselves -- they are implied resources. Requirements.txt has full list of packages needed.) The app UI was built using Bootstrap.
+Direct lines of code are cited as comments inline. These inline references are aggregated here (Does not include documentation for packages themselves -- they are implied resources. Requirements.txt has full list of packages needed.) The app UI was built using Bootstrap. References regarding the data itself are in the presentation in the deliverables directory and linked in the app Web UI.
 Model pipeline:
 - https://stackoverflow.com/questions/27975069/how-to-filter-rows-containing-a-string-pattern-from-a-pandas-dataframe
 - https://stackoverflow.com/questions/53699012/performant-cartesian-product-cross-join-with-pandas
