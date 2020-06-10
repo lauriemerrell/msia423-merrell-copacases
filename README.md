@@ -98,12 +98,14 @@ All files needed to run the pipeline or the app directly are saved in the root d
 
 ## References
 Direct lines of code are cited as comments inline. These inline references are aggregated here (Does not include documentation for packages themselves -- they are implied resources. Requirements.txt has full list of packages needed.) The app UI was built using Bootstrap. References regarding the data itself are in the presentation in the deliverables directory and linked in the app Web UI.
+
 Model pipeline:
 - https://stackoverflow.com/questions/27975069/how-to-filter-rows-containing-a-string-pattern-from-a-pandas-dataframe
 - https://stackoverflow.com/questions/53699012/performant-cartesian-product-cross-join-with-pandas
 - https://stackoverflow.com/questions/23377108/pandas-percentage-of-total-with-groupby
 - https://stackoverflow.com/questions/39043326/computing-feature-importance-with-onehotencoded-features
 - https://stackoverflow.com/questions/47778372/python-requests-fail-silently
+
 App:
 - https://stackoverflow.com/questions/14105452/what-is-the-cause-of-the-bad-request-error-when-submitting-form-in-flask-applica
 - https://stackoverflow.com/questions/37336520/sqlalchemy-dynamic-filter
