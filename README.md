@@ -99,6 +99,10 @@ All files needed to run the pipeline or the app directly are saved in the root d
 ## References
 Direct lines of code are cited as comments inline. These inline references are aggregated here (Does not include documentation for packages themselves -- they are implied resources. Requirements.txt has full list of packages needed.) The app UI was built using Bootstrap. References regarding the data itself are in the presentation in the deliverables directory and linked in the app Web UI.
 
+Two references not cited inline about writing model to file:
+- https://stackoverflow.com/questions/33054527/typeerror-a-bytes-like-object-is-required-not-str-when-writing-to-a-file-in
+- https://machinelearningmastery.com/save-load-machine-learning-models-python-scikit-learn/
+
 Model pipeline:
 - https://stackoverflow.com/questions/27975069/how-to-filter-rows-containing-a-string-pattern-from-a-pandas-dataframe
 - https://stackoverflow.com/questions/53699012/performant-cartesian-product-cross-join-with-pandas
