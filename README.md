@@ -1,4 +1,5 @@
-# MSiA423 Template Repository
+# This is the course project for the MSIA 423 (Analytics Value Chain) course in spring 2020. 
+The repo was created from a template provided for the course, but the final organization represents my individual project work.
 
 <!-- toc -->
 
